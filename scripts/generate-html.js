@@ -56,8 +56,14 @@ function formatDate(iso) {
 function formatDateCN(iso) {
   if (!iso) return '';
   const d = new Date(iso);
-  const months = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
-  return `${d.getFullYear()}年${months[d.getMonth()]}${d.getDate()}日`;
+  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+}
+function formatDateEN(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  return `${dd}/${mm}/${d.getFullYear()}`;
 }
 
 function avatarInitials(name) {
@@ -76,6 +82,47 @@ function renderSummaryHTML(text) {
     '<a class="inline-link" href="$1" target="_blank" rel="noopener">↗</a>');
   return html;
 }
+
+// ─── i18n Translations ───────────────────────────────────────
+
+const I18N = {
+  sidebarTagline:        { zh: '<span data-i18n="sidebarTagline">AI builder 社区精选日报</span>',   en: 'AI Builders Daily Digest' },
+  sidebarNavLabel:       { zh: '本期内容',                 en: 'In This Issue' },
+  navBuilders:           { zh: 'X Builder 动态',           en: 'X Builders' },
+  navBlogs:              { zh: '官方博客',                 en: 'Official Blogs' },
+  navPodcasts:           { zh: '播客',                     en: 'Podcasts' },
+  navXArticles:          { zh: 'X 长文',                   en: 'X Articles' },
+  switchLangAria:        { zh: '切换语言',                 en: 'Switch Language' },
+  switchLangTitle:       { zh: '切换中文/English',         en: 'Switch Chinese/English' },
+  tweetsUnit:            { zh: '条推文',                   en: 'tweets' },
+  heroTagline:           { zh: '<span data-i18n="heroTagline">AI builder 社区每日精选，给真正在 building 的人。</span>',
+                           en: 'Daily curated picks from the AI builder community, for those actually building.' },
+  statTweets:            { zh: '推文',                     en: 'Tweets' },
+  statBlogs:             { zh: '博客',                     en: 'Blogs' },
+  statPodcasts:          { zh: '播客',                     en: 'Podcasts' },
+  sectionBuilderActivity:{ zh: 'Builder 动态',             en: 'Builder Activity' },
+  sectionBuilderDesc:    { zh: '今日活跃 AI builder 及其推文', en: "Today's active AI builders and their posts" },
+  buildersUnit:          { zh: '位',                       en: 'builders' },
+  sectionXArticles:      { zh: 'X 长文',                   en: 'X Articles' },
+  sectionXArticlesDesc:  { zh: 'Builder 深度分享',         en: 'Deep dives from builders' },
+  articlesUnit:          { zh: '篇',                       en: 'articles' },
+  sectionBlogs:          { zh: '官方博客',                 en: 'Official Blogs' },
+  sectionBlogsDesc:      { zh: 'AI 实验室官方更新',        en: 'Official AI lab updates' },
+  postsUnit:             { zh: '篇',                       en: 'posts' },
+  sectionPodcasts:       { zh: '播客',                     en: 'Podcasts' },
+  sectionPodcastsDesc:   { zh: '值得收听的深度对话',       en: 'Deep conversations worth your time' },
+  episodesUnit:          { zh: '期',                       en: 'episodes' },
+  viewTweet:             { zh: '查看推文',                 en: 'View Tweet' },
+  viewTweetN:            { zh: '推文',                     en: 'Tweet' },
+  readMore:              { zh: '<span data-i18n-zh="阅读全文 →" data-i18n-en="Read More →">阅读全文 →</span>',               en: 'Read More →' },
+  listen:                { zh: '<span data-i18n-zh="收听本期 →" data-i18n-en="Listen →">收听本期 →</span>',               en: 'Listen →' },
+  expandText:            { zh: '展开阅读 ▾',               en: 'Expand ▾' },
+  collapseText:          { zh: '收起 ▴',                   en: 'Collapse ▴' },
+  quotedTweet:           { zh: '<span data-i18n-zh="↩ 引用推文" data-i18n-en="↩ Quoted Tweet">↩ 引用推文</span>',               en: '↩ Quoted Tweet' },
+  viewAllBuilders:       { zh: '查看全部 N 位 Builder ▾',  en: 'View All N Builders ▾' },
+  brandBuilders:         { zh: 'Builders',                 en: 'Builders' },
+  brandDigest:           { zh: 'Digest',                   en: 'Digest' },
+};
 
 function renderTweetMedia(media, tweetUrl) {
   if (!Array.isArray(media) || media.length === 0) return '';
@@ -115,18 +162,18 @@ function renderExpandableSection(fullText, previewLen) {
   return `<div class="expandable" id="${id}">
     <div class="exp-preview">
       <p class="exp-content">${renderSummaryHTML(preview)}</p>
-      <button class="exp-toggle" onclick="var d=document.getElementById('${id}');d.querySelector('.exp-preview').style.display='none';d.querySelector('.exp-full').style.display='block';">展开阅读 ▾</button>
+      <button class="exp-toggle" data-i18n-zh="展开阅读 ▾" data-i18n-en="Expand ▾" onclick="var d=document.getElementById('${id}');d.querySelector('.exp-preview').style.display='none';d.querySelector('.exp-full').style.display='block';">展开阅读 ▾</button>
     </div>
     <div class="exp-full" style="display:none;">
       <p class="exp-content">${renderSummaryHTML(fullText.replace(/\*\*/g, '').trim())}</p>
-      <button class="exp-toggle" onclick="var d=document.getElementById('${id}');d.querySelector('.exp-full').style.display='none';d.querySelector('.exp-preview').style.display='block';">收起 ▴</button>
+      <button class="exp-toggle" onclick="var d=document.getElementById('${id}');d.querySelector('.exp-full').style.display='none';d.querySelector('.exp-preview').style.display=" data-i18n-zh="收起 ▴" data-i18n-en="Collapse ▴'block';">收起 ▴</button>
     </div>
   </div>`;
 }
 
 // ─── Builder Card (Featured) ───────────────────────────────
 
-function buildBuilderFeatured(b, idx, summaries) {
+function buildBuilderFeatured(b, idx, summaries, builderArticleMap) {
   const initials = avatarInitials(b.name);
   const handle = b.handle.replace('@', '');
   const tweets = b.tweets || [];
@@ -169,6 +216,23 @@ function buildBuilderFeatured(b, idx, summaries) {
   const firstQuote = tweets.find(t => t.isQuote);
   const quoteBlock = firstQuote ? renderQuoteTweetContext(firstQuote) : '';
 
+  // X Article cross-reference
+  const handleLower = handle.toLowerCase();
+  const articleEntries = (builderArticleMap || {})[handleLower] || [];
+  let articleButtons = '';
+  if (articleEntries.length > 0) {
+    articleButtons = '<div class="bc-article-links">' + articleEntries.map(function(a) {
+      return '<a class="bc-article-btn" href="' + escAttr(a.url || a.tweetUrl || '#') + '" target="_blank" rel="noopener">' + esc(a.title || 'X Article') + '</a>';
+    }).join('') + '</div>';
+  }
+  if (articleEntries.length > 0 && articleEntries[0].title) {
+    var artTitle = articleEntries[0].title;
+    if (summaryZh && summaryZh.indexOf(artTitle) < 0 && summaryZh.indexOf('X 长文') < 0) {
+      summaryZh = 'X ' + artTitle + '. ' + summaryZh;
+      if (summaryEn) summaryEn = 'X Article "' + artTitle + '". ' + summaryEn;
+    }
+  }
+
   return `<article class="builder-card-rich">
     <div class="bc-header">
       <img class="bc-avatar" src="${escAttr(avatarImg(handle))}" alt="${esc(b.name)} avatar" loading="lazy"
@@ -184,6 +248,7 @@ function buildBuilderFeatured(b, idx, summaries) {
     ${mediaStrip}
     ${quoteBlock}
     ${tweetButtons}
+    ${articleButtons}
   </article>`;
 }
 
@@ -317,66 +382,6 @@ function buildXArticleCard(entry, xArticleSummary) {
   </article>`;
 }
 
-// ─── Signal Cards ──────────────────────────────────────────
-
-function buildSignalCards(builders, stats) {
-  const signals = [];
-
-  const topBuilders = builders.slice(0, 3).map(b => b.name).join('、');
-  signals.push({
-    label: 'Signal 01',
-    title: `今日 ${stats.xBuilders} 位 AI Builder 活跃发声`,
-    summary: `${topBuilders} 等人发布重要内容，从产品发布到行业洞察，coding agent 和模型更新仍是最受关注的焦点。`,
-    chips: `<span class="signal-chip chip-x">X</span>`
-  });
-
-  // Signal 2: X Articles if available
-  if (stats.xArticles > 0) {
-    signals.push({
-      label: 'Signal 02',
-      title: `${stats.xArticles} 篇 X 长文`,
-      summary: 'Builder 发布深度长文，涵盖技术洞察、产品思考与行业趋势，值得完整阅读。',
-      chips: `<span class="signal-chip chip-x">X Article</span>`
-    });
-  }
-
-  // Signal 3: Blog highlight
-  const blogs = (stats.blogPosts > 0) ? `共 ${stats.blogPosts} 篇官方博文` : '';
-  signals.push({
-    label: stats.xArticles > 0 ? 'Signal 03' : 'Signal 02',
-    title: 'AI 实验室官博更新',
-    summary: `Anthropic、Claude 等发布最新博文${blogs ? '，' + blogs : ''}涵盖 postmortem、产品更新等关键信息。`,
-    chips: `<span class="signal-chip chip-blog">Blog</span>`
-  });
-
-  // Signal 4: Podcast if available
-  if (stats.podcastEpisodes > 0) {
-    signals.push({
-      label: stats.xArticles > 0 ? 'Signal 04' : 'Signal 03',
-      title: '播客：AI 基建与 Coding Agents 新趋势',
-      summary: '行业播客讨论 AI 基础设施趋稳、skills 格式成事实标准、agent 时代 API-first 成为产品必备。',
-      chips: `<span class="signal-chip chip-podcast">Podcast</span>`
-    });
-  }
-
-  // Signal 5: Overall insight
-  const sigNum = stats.xArticles > 0 ? (stats.podcastEpisodes > 0 ? 'Signal 05' : 'Signal 04') : (stats.podcastEpisodes > 0 ? 'Signal 04' : 'Signal 03');
-  signals.push({
-    label: sigNum,
-    title: `${stats.totalTweets} 条推文 · 密集信息流`,
-    summary: `今日共采集 ${stats.totalTweets} 条高质量推文，涵盖 GPT-5.5、Claude Code、Managed Agents Memory、AI 基建等核心话题。`,
-    chips: `<span class="signal-chip chip-x">X</span><span class="signal-chip chip-blog">Blog</span>`
-  });
-
-  const signalCount = signals.length;
-  return { cards: signals.map(s => `<article class="signal-card">
-    <span class="signal-label">${s.label}</span>
-    <h3 class="signal-title">${esc(s.title)}</h3>
-    <p class="signal-summary">${esc(s.summary)}</p>
-    <div class="signal-chips">${s.chips}</div>
-  </article>`).join('\n'), count: signalCount };
-}
-
 // ─── Main Generator ────────────────────────────────────────
 
 async function generate() {
@@ -418,12 +423,25 @@ async function generate() {
       } else {
         builderSummaries = parsed;
       }
-      console.log(`Loaded summaries: ${Object.keys(builderSummaries || {}).length} builders, ${blogSummaries.length} blogs, ${podcastSummaries.length} podcasts, ${xArticleSummaries.length} xArticles`);
+  console.log(`Loaded summaries: ${Object.keys(builderSummaries || {}).length} builders, ${blogSummaries.length} blogs, ${podcastSummaries.length} podcasts, ${xArticleSummaries.length} xArticles`);
     } catch (err) {
       console.error('Failed to load summaries file:', err.message);
     }
   }
 
+
+  // Build handle-to-articles cross-reference map
+  const builderArticleMap = {};
+  for (const xa of (xArticles || [])) {
+    const h = (xa.handle || '').replace('@', '').toLowerCase();
+    if (!h) continue;
+    if (!builderArticleMap[h]) builderArticleMap[h] = [];
+    builderArticleMap[h].push({
+      title: (xa.article || {}).title || '',
+      url: (xa.article || {}).url || '',
+      tweetUrl: xa.tweetUrl || null
+    });
+  }
   // Build handle→summary map for X Articles
   const xArticleSummaryMap = {};
   for (const xas of xArticleSummaries) {
@@ -442,22 +460,19 @@ async function generate() {
 
   // Build date
   const today = new Date();
-  const dateStr = formatDateCN(today);
+  const dateCN = formatDateCN(today);
+  const dateEN = formatDateEN(today);
   const dateISO = formatDate(today);
 
-  // Build sections
-  const signalData = buildSignalCards(builders, stats);
-  const signalCards = signalData.cards;
-
   // Featured builders (top 6)
-  const featured = builders.slice(0, 6).map((b, i) => buildBuilderFeatured(b, i, builderSummaries)).join('\n');
+  const featured = builders.slice(0, 6).map((b, i) => buildBuilderFeatured(b, i, builderSummaries, builderArticleMap)).join('\n');
 
-  // Remaining builders (compact)
-  const compact = builders.slice(6).map(b => buildBuilderCompact(b, builderSummaries)).join('\n');
-  const compactSection = compact
+  // Remaining builders (same card format)
+  const remaining = builders.slice(6).map((b, i) => buildBuilderFeatured(b, i + 6, builderSummaries, builderArticleMap)).join('\n');
+  const compactSection = remaining
     ? `<details class="view-all-wrapper">
-        <summary>查看全部 ${stats.xBuilders} 位 Builder ▾</summary>
-        <div class="builders-compact">${compact}</div>
+        <summary><span data-i18n-zh="查看全部 ${stats.xBuilders} 位 Builder ▾" data-i18n-en="View All ${stats.xBuilders} Builders ▾">查看全部 ${stats.xBuilders} 位 Builder ▾</span></summary>
+        <div class="builder-featured-grid">${remaining}</div>
        </details>`
     : '';
 
@@ -472,15 +487,15 @@ async function generate() {
     ? `<section class="section-panel" id="section-x-articles" aria-labelledby="articles-heading">
         <div class="section-panel-header">
           <div class="section-icon icon-blog" aria-hidden="true">📄</div>
-          <h2 id="articles-heading">X 长文</h2>
-          <span class="section-desc">Builder 深度分享</span>
-          <span class="section-badge">${stats.xArticles || xArticlesList.length} 篇</span>
+          <h2 id="articles-heading"><span data-i18n="sectionXArticles">X 长文</span></h2>
+          <span class="section-desc"><span data-i18n="sectionXArticlesDesc">Builder 深度分享</span></span>
+          <span class="section-badge">${stats.xArticles || xArticlesList.length} <span data-i18n="articlesUnit">篇</span></span>
         </div>
         <div class="article-grid">${articleCards}</div>
        </section>`
     : '';
   const articlesNav = hasArticles
-    ? `\n                <a href="#section-x-articles" class="nav-x">📄 X 长文 <span class="nav-badge">${stats.xArticles || xArticlesList.length}</span></a>`
+    ? `\n                <a href="#section-x-articles" class="nav-x">📄 <span data-i18n="navXArticles">X 长文</span> <span class="nav-badge">${stats.xArticles || xArticlesList.length}</span></a>`
     : '';
 
   // Blogs
@@ -544,138 +559,81 @@ async function generate() {
             min-height: 100vh;
         }
 
-        .app-shell {
-            display: grid;
-            grid-template-columns: var(--sidebar-w) 1fr;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px 24px 48px;
-            gap: 28px;
-            align-items: start;
-        }
-
-        .sidebar {
-            position: sticky;
-            top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            background: var(--surface);
-            backdrop-filter: blur(18px);
+        .top-header {
+            display: flex; align-items: center; gap: 14px;
+            max-width: 1400px; margin: 0 auto; padding: 12px 24px;
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(5, 7, 17, 0.85); backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 24px 20px 20px;
-            z-index: 10;
-            min-height: fit-content;
+            border-bottom: 1px solid var(--border);
         }
-        .sidebar-brand { display: flex; align-items: center; gap: 12px; }
-        .sidebar-brand .brand-icon {
-            width: 40px; height: 40px; border-radius: 10px;
+        .header-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+        .header-left .brand-icon {
+            width: 32px; height: 32px; border-radius: 7px; flex-shrink: 0;
             background: linear-gradient(135deg, #8b5cf6, #3b82f6);
             display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 15px; color: #fff;
-            flex-shrink: 0; letter-spacing: -0.5px;
-            box-shadow: 0 0 24px rgba(139, 92, 246, 0.35);
+            font-weight: 800; font-size: 12px; color: #fff;
+            box-shadow: 0 0 16px rgba(139, 92, 246, 0.3);
         }
-        .sidebar-brand .brand-text { font-weight: 700; font-size: 15px; color: var(--text); letter-spacing: -0.2px; line-height: 1.3; }
-        .sidebar-meta { font-size: 12px; color: var(--text-muted); line-height: 1.6; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-        .sidebar-meta .issue-date { font-weight: 600; color: var(--text-soft); font-size: 13px; display: block; margin-bottom: 2px; }
-
-        .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
-        .sidebar-nav .nav-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); font-weight: 600; margin-bottom: 2px; }
-        .sidebar-nav a {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 9px 12px; border-radius: 10px; text-decoration: none;
-            color: var(--text-soft); font-size: 13px; font-weight: 500;
-            transition: all 0.2s; border: 1px solid transparent;
+        .header-brand { display: flex; flex-direction: column; min-width: 0; }
+        .header-title { font-weight: 700; font-size: 14px; color: var(--text); letter-spacing: -0.2px; }
+        .header-date { font-size: 10px; color: var(--text-muted); }
+        .header-nav { display: flex; gap: 4px; flex-shrink: 0; }
+        .header-nav a {
+            display: flex; align-items: center; gap: 4px;
+            padding: 5px 8px; border-radius: 6px; text-decoration: none;
+            color: var(--text-soft); font-size: 11px; font-weight: 500;
+            border: 1px solid transparent; transition: all 0.2s; white-space: nowrap;
         }
-        .sidebar-nav a:hover, .sidebar-nav a:focus-visible {
-            background: var(--surface-2); border-color: var(--border); color: var(--text); outline: none;
-        }
-        .sidebar-nav .nav-badge {
-            font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 100px;
+        .header-nav a:hover { background: var(--surface-2); border-color: var(--border); color: var(--text); }
+        .header-nav .nav-badge {
+            font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 100px;
             background: var(--surface-solid); border: 1px solid var(--border); color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace; min-width: 22px; text-align: center;
+            font-family: 'JetBrains Mono', monospace;
         }
-        .sidebar-nav a.nav-x .nav-badge { border-color: rgba(59, 130, 246, 0.4); color: var(--blue); }
-        .sidebar-nav a.nav-blog .nav-badge { border-color: rgba(34, 197, 94, 0.4); color: var(--green); }
-        .sidebar-nav a.nav-podcast .nav-badge { border-color: rgba(249, 115, 22, 0.4); color: var(--orange); }
+        .header-nav a.nav-x .nav-badge { border-color: rgba(59, 130, 246, 0.4); color: var(--blue); }
+        .header-nav a.nav-podcast .nav-badge { border-color: rgba(249, 115, 22, 0.4); color: var(--orange); }
 
-        .sidebar-footer { font-size: 11px; color: var(--text-muted); text-align: center; padding-top: 6px; border-top: 1px solid var(--border); line-height: 1.5; }
-        .sidebar-footer a { color: var(--violet); text-decoration: none; font-weight: 500; }
-        .sidebar-footer a:hover { text-decoration: underline; }
 
-        .lang-toggle {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: var(--surface-2); border: 1px solid var(--border);
-            border-radius: 100px; padding: 4px; cursor: pointer;
-            font-size: 11px; font-weight: 600; font-family: 'JetBrains Mono',monospace;
-            color: var(--text-muted); transition: all 0.2s; user-select: none;
-            width: fit-content;
-        }
         .lang-toggle:hover { border-color: var(--border-strong); color: var(--text); }
-        .lang-toggle .lt-option {
-            padding: 5px 12px; border-radius: 100px; transition: all 0.2s;
-        }
-        .lang-toggle .lt-option.active {
-            background: var(--violet); color: #fff;
-            box-shadow: 0 0 12px rgba(139, 92, 246, 0.3);
-        }
+        .lang-toggle .lt-option { padding: 3px 8px; border-radius: 100px; transition: all 0.2s; }
+        .lang-toggle .lt-option.active { background: var(--violet); color: #fff; box-shadow: 0 0 10px rgba(139, 92, 246, 0.3); }
 
-        .main-content { display: flex; flex-direction: column; gap: 28px; min-width: 0; }
+        .main-grid {
+            max-width: 1400px; margin: 0 auto; padding: 14px 24px 48px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 12px;
+        }
+        .main-grid > .section-panel { grid-column: 1 / -1; }
+        .main-grid > .section-panel#section-x { grid-column: 1 / -1; }
+        .main-grid > .section-panel#section-blogs { grid-column: 1 / -1; }
+        .main-grid > .section-panel#section-podcast { grid-column: 1 / -1; }
 
-        .hero-panel {
-            position: relative; border-radius: var(--radius-xl); padding: 36px 32px 32px;
-            background: var(--surface); backdrop-filter: blur(18px);
-            border: 1px solid var(--border-strong); overflow: hidden;
-            display: flex; flex-direction: column; gap: 20px;
+        .hero-compact {
+            text-align: center; padding: 24px 24px 8px; grid-column: 1 / -1;
         }
-        .hero-panel::before {
-            content: ''; position: absolute; top: -60%; right: -30%;
-            width: 100%; height: 200%;
-            background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.14) 0%, transparent 60%);
-            pointer-events: none;
-        }
-        .hero-panel::after {
-            content: ''; position: absolute; bottom: -40%; left: -20%;
-            width: 80%; height: 140%;
-            background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.09) 0%, transparent 55%);
-            pointer-events: none;
-        }
-        .hero-panel > * { position: relative; z-index: 1; }
-        .hero-badge {
+        .hero-compact .hero-badge {
             display: inline-flex; align-items: center; gap: 6px;
             background: var(--surface-2); border: 1px solid var(--border);
-            border-radius: 100px; padding: 5px 14px;
-            font-size: 11px; font-weight: 600; color: var(--violet);
-            letter-spacing: 0.6px; text-transform: uppercase; width: fit-content;
+            border-radius: 100px; padding: 4px 12px;
+            font-size: 10px; font-weight: 600; color: var(--violet);
+            letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 8px;
         }
-        .hero-badge::before {
-            content: ''; width: 6px; height: 6px; border-radius: 50%;
+        .hero-compact .hero-badge::before {
+            content: ''; width: 5px; height: 5px; border-radius: 50%;
             background: var(--green); animation: heroPulse 2s ease-in-out infinite;
         }
         @keyframes heroPulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
-        .hero-title {
-            font-size: clamp(34px, 5vw, 54px); font-weight: 800; letter-spacing: -0.8px; line-height: 1.1;
+        .hero-compact .hero-title {
+            font-size: clamp(24px, 3.5vw, 36px); font-weight: 800; letter-spacing: -0.8px; line-height: 1.1;
             background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 50%, #94a3b8 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            margin-bottom: 4px;
         }
-        .hero-subtitle { font-size: 14px; color: var(--text-muted); line-height: 1.5; max-width: 600px; }
-        .hero-subtitle strong { color: var(--text-soft); font-weight: 600; }
-        .hero-stats { display: flex; flex-wrap: wrap; gap: 12px; }
-        .stat-tile {
-            display: flex; align-items: center; gap: 8px;
-            background: var(--surface-2); border: 1px solid var(--border);
-            border-radius: var(--radius-sm); padding: 10px 16px;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .stat-tile:hover { border-color: var(--border-strong); box-shadow: 0 0 14px rgba(139, 92, 246, 0.1); }
-        .stat-tile .stat-icon { font-size: 18px; flex-shrink: 0; }
-        .stat-tile .stat-num { font-weight: 700; font-size: 20px; color: var(--text); letter-spacing: -0.3px; font-family: 'JetBrains Mono',monospace; }
-        .stat-tile .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        .hero-compact .hero-subtitle { font-size: 12px; color: var(--text-muted); max-width: 480px; margin: 0 auto; }
 
-        .section-panel {
+        .section-panel
             background: var(--surface); backdrop-filter: blur(18px);
             border: 1px solid var(--border); border-radius: var(--radius-lg);
             padding: 24px 24px 20px; display: flex; flex-direction: column; gap: 16px;
@@ -689,7 +647,6 @@ async function generate() {
         .section-icon.icon-x { background: linear-gradient(135deg,#3b82f6,#8b5cf6); color: #fff; }
         .section-icon.icon-blog { background: linear-gradient(135deg,#22c55e,#22d3ee); color: #000; }
         .section-icon.icon-podcast { background: linear-gradient(135deg,#f97316,#ec4899); color: #fff; }
-        .section-icon.icon-signal { background: linear-gradient(135deg,#8b5cf6,#22d3ee); color: #fff; }
         .section-panel-header h2 { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; color: var(--text); }
         .section-panel-header .section-desc { font-size: 12px; color: var(--text-muted); flex: 1; }
         .section-panel-header .section-badge {
@@ -698,21 +655,7 @@ async function generate() {
             font-family: 'JetBrains Mono',monospace; white-space: nowrap;
         }
 
-        .signal-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
-        .signal-card {
-            background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-md);
-            padding: 16px 18px; transition: border-color 0.2s, box-shadow 0.2s;
-            display: flex; flex-direction: column; gap: 8px;
-        }
-        .signal-card:hover { border-color: var(--border-strong); box-shadow: 0 0 20px rgba(139,92,246,0.08); }
-        .signal-card .signal-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--violet); font-weight: 700; font-family: 'JetBrains Mono',monospace; }
-        .signal-card .signal-title { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -0.2px; line-height: 1.35; }
-        .signal-card .signal-summary { font-size: 12px; color: var(--text-muted); line-height: 1.55; }
-        .signal-card .signal-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto; }
         .signal-chip { font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600; letter-spacing: 0.3px; border: 1px solid transparent; }
-        .signal-chip.chip-x { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.3); color: var(--blue); }
-        .signal-chip.chip-blog { background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.28); color: var(--green); }
-        .signal-chip.chip-podcast { background: rgba(249,115,22,0.13); border-color: rgba(249,115,22,0.3); color: var(--orange); }
 
         .builder-featured-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
         .builder-card-rich {
@@ -746,6 +689,15 @@ async function generate() {
             font-family: 'JetBrains Mono',monospace; transition: all 0.2s;
         }
         .bc-tweet-btn:hover { border-color: var(--blue); background: rgba(59,130,246,0.1); color: var(--cyan); }
+
+        .bc-article-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+        .bc-article-btn {
+            display: inline-flex; align-items: center; gap: 3px; padding: 4px 10px;
+            background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.28); border-radius: 6px;
+            font-size: 10px; color: var(--green); text-decoration: none;
+            font-family: inherit; transition: all 0.2s;
+        }
+        .bc-article-btn:hover { border-color: var(--green); background: rgba(34,197,94,0.14); color: #4ade80; }
 
         .inline-link {
             color: var(--blue); text-decoration: none;
@@ -854,27 +806,30 @@ async function generate() {
         .page-footer a:hover { text-decoration: underline; }
 
         @media (max-width: 1100px) {
-            .app-shell { grid-template-columns: 1fr; padding: 16px 16px 36px; gap: 20px; }
-            .sidebar { position: static; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px; padding: 16px 18px; border-radius: var(--radius-md); }
+            .main-grid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); padding: 10px 12px 32px; }
+            .top-header { padding: 8px 12px; } padding: 16px 16px 36px; gap: 20px; }
+    
             .sidebar-brand .brand-icon { width: 32px; height: 32px; border-radius: 8px; font-size: 13px; }
-            .sidebar-meta { flex:1; border-bottom:none; padding-bottom:0; }
-            .sidebar-nav { flex-direction: row; gap: 6px; flex-wrap: wrap; width: 100%; }
+    
+    
             .sidebar-nav .nav-label { width: 100%; }
             .sidebar-nav a { padding: 6px 10px; font-size: 11px; }
-            .sidebar-footer { width:100%; border-top:none; padding-top:0; }
+    
             .blog-grid { grid-template-columns: repeat(2,1fr); }
             .builder-featured-grid { grid-template-columns: 1fr 1fr; }
-            .signal-grid { grid-template-columns: 1fr 1fr; }
             .podcast-card { flex-direction: column; }
             .podcast-card .pc-cover-wrap { width:100%; min-height:120px; border-right:none; border-bottom:1px solid var(--border); }
         }
 
         @media (max-width: 767px) {
-            .app-shell { padding: 10px 10px 28px; gap: 14px; }
+            .main-grid { grid-template-columns: 1fr; padding: 6px 6px 24px; gap: 6px; }
+            .top-header { padding: 6px 8px; gap: 6px; }
+            .header-nav { display: none; }
+            .hero-compact { padding: 14px 8px 6px; }
+            .hero-compact .hero-title { font-size: 20px; } gap: 14px; }
             .sidebar { padding: 12px 14px; gap: 8px; }
-            .hero-panel { padding: 22px 16px 20px; gap: 14px; border-radius: var(--radius-md); }
+    
             .hero-title { font-size: 28px; }
-            .signal-grid { grid-template-columns: 1fr; }
             .builder-featured-grid { grid-template-columns: 1fr; }
             .blog-grid { grid-template-columns: 1fr; }
             .podcast-card { flex-direction: column; }
@@ -883,6 +838,10 @@ async function generate() {
             .builder-card-rich { padding: 14px 16px; }
         }
 
+                /* Language toggle CSS */
+        body.lang-zh .bi-en { display: none !important; }
+        body.lang-en .bi-zh { display: none !important; }
+
         @media (prefers-reduced-motion: reduce) {
             .hero-badge::before { animation: none; }
             * { transition-duration: 0.01ms !important; }
@@ -890,70 +849,43 @@ async function generate() {
     </style>
 </head>
 <body class="lang-zh">
-    <div class="app-shell">
-        <!-- ═══ SIDEBAR ═══ -->
-        <aside class="sidebar" aria-label="Issue sidebar">
-            <div class="sidebar-brand">
-                <div class="brand-icon" aria-hidden="true">AI</div>
-                <span class="brand-text">Builders<br>Digest</span>
-            </div>
-            <div class="sidebar-meta">
-                <span class="issue-date">${dateStr}</span>
-                AI builder 社区精选日报
-            </div>
-            <nav class="sidebar-nav" aria-label="In this issue">
-                <span class="nav-label">本期内容</span>
-                <a href="#section-x" class="nav-x">X Builder 动态 <span class="nav-badge">${stats.xBuilders}</span></a>${articlesNav}
-                <a href="#section-blogs" class="nav-blog">官方博客 <span class="nav-badge">${stats.blogPosts}</span></a>
-                <a href="#section-podcast" class="nav-podcast">播客 <span class="nav-badge">${stats.podcastEpisodes}</span></a>
-            </nav>
-            <button class="lang-toggle" onclick="toggleLang()" aria-label="切换语言" title="切换中文/English">
-              <span class="lt-option active" id="lt-zh">中文</span>
-              <span class="lt-option" id="lt-en">EN</span>
-            </button>
-            <div class="sidebar-footer">
-                <a href="https://github.com/zarazhangrui/follow-builders" target="_blank" rel="noopener">Follow Builders</a>
-            </div>
-        </aside>
 
-        <!-- ═══ MAIN ═══ -->
-        <main class="main-content">
+    <!-- TOP HEADER -->
+    <header class="top-header">
+        <div class="header-left">
+            <div class="brand-icon" aria-hidden="true">AI</div>
+            <div class="header-brand">
+                <span class="header-title"><span data-i18n="brandBuilders">Builders</span> <span data-i18n="brandDigest">Digest</span></span>
+                <span class="header-date" data-i18n-zh="${dateCN} · ${stats.totalTweets} 条推文 · ${stats.podcastEpisodes} 期播客" data-i18n-en="${dateEN} · ${stats.totalTweets} tweets · ${stats.podcastEpisodes} episodes">${dateCN} · ${stats.totalTweets} <span data-i18n="tweetsUnit">条推文</span> · ${stats.podcastEpisodes} <span data-i18n="episodesUnit">期播客</span></span>
+            </div>
+        </div>
+        <nav class="header-nav">
+            <a href="#section-x" class="nav-x"><span data-i18n="navBuilders">X Builder 动态</span> <span class="nav-badge">${stats.xBuilders}</span></a>${articlesNav}
+            <a href="#section-podcast" class="nav-podcast"><span data-i18n="navPodcasts">播客</span> <span class="nav-badge">${stats.podcastEpisodes}</span></a>
+        </nav>
+        <button class="lang-toggle" onclick="toggleLang()" aria-label="切换语言" data-i18n-aria="switchLangAria" title="切换中文/English" data-i18n-title="switchLangTitle">
+          <span class="lt-option active" id="lt-zh">ZH</span>
+          <span class="lt-option" id="lt-en">EN</span>
+        </button>
+    </header>
+
+    <!-- MAIN GRID -->
+    <main class="main-grid">
             <!-- Hero -->
-            <section class="hero-panel" aria-labelledby="hero-heading">
+            <section class="hero-compact">
                 <div class="hero-badge">Daily Digest</div>
-                <h1 class="hero-title" id="hero-heading">AI Builders Digest</h1>
-                <p class="hero-subtitle">
-                    <strong>${dateStr}</strong> · ${stats.totalTweets} 条推文 · ${stats.blogPosts} 篇博客 · ${stats.podcastEpisodes} 期播客<br>
-                    AI builder 社区每日精选，给真正在 building 的人。
-                </p>
-                <div class="hero-stats">
-                    <div class="stat-tile"><span class="stat-icon" aria-hidden="true">✕</span><span class="stat-num">${stats.xBuilders}</span><span class="stat-label">Builders</span></div>
-                    <div class="stat-tile"><span class="stat-icon" aria-hidden="true">💬</span><span class="stat-num">${stats.totalTweets}</span><span class="stat-label">推文</span></div>
-                    <div class="stat-tile"><span class="stat-icon" aria-hidden="true">📝</span><span class="stat-num">${stats.blogPosts}</span><span class="stat-label">博客</span></div>
-                    <div class="stat-tile"><span class="stat-icon" aria-hidden="true">🎙</span><span class="stat-num">${stats.podcastEpisodes}</span><span class="stat-label">播客</span></div>
-                </div>
-            </section>
-
-            <!-- Today's Signal -->
-            <section class="section-panel" aria-labelledby="signal-heading">
-                <div class="section-panel-header">
-                    <div class="section-icon icon-signal" aria-hidden="true">⚡</div>
-                    <h2 id="signal-heading">今日信号</h2>
-                    <span class="section-desc">当日高亮洞察</span>
-                    <span class="section-badge">${signalData.count} 条信号</span>
-                </div>
-                <div class="signal-grid">
-                    ${signalCards}
-                </div>
+                <h1 class="hero-title">AI Builders Digest</h1>
+                <p class="hero-subtitle"><span data-i18n="heroTagline">AI builder 社区每日精选，给真正在 building 的人。</span></p>
             </section>
 
             <!-- X / Twitter -->
+
             <section class="section-panel" id="section-x" aria-labelledby="x-heading">
                 <div class="section-panel-header">
                     <div class="section-icon icon-x" aria-hidden="true">✕</div>
-                    <h2 id="x-heading">Builder 动态</h2>
-                    <span class="section-desc">今日活跃 AI builder 及其推文</span>
-                    <span class="section-badge">${stats.xBuilders} 位</span>
+                    <h2 id="x-heading"><span data-i18n="sectionBuilderActivity">Builder 动态</span></h2>
+                    <span class="section-desc"><span data-i18n="sectionBuilderDesc">今日活跃 AI builder 及其推文</span></span>
+                    <span class="section-badge">${stats.xBuilders} <span data-i18n="buildersUnit">位</span></span>
                 </div>
                 <div class="builder-featured-grid">
                     ${featured}
@@ -966,9 +898,9 @@ async function generate() {
             <section class="section-panel" id="section-blogs" aria-labelledby="blogs-heading">
                 <div class="section-panel-header">
                     <div class="section-icon icon-blog" aria-hidden="true">📝</div>
-                    <h2 id="blogs-heading">官方博客</h2>
-                    <span class="section-desc">AI 实验室官方更新</span>
-                    <span class="section-badge">${stats.blogPosts} 篇</span>
+                    <h2 id="blogs-heading"><span data-i18n="sectionBlogs">官方博客</span></h2>
+                    <span class="section-desc"><span data-i18n="sectionBlogsDesc">AI 实验室官方更新</span></span>
+                    <span class="section-badge">${stats.blogPosts} <span data-i18n="postsUnit">篇</span></span>
                 </div>
                 <div class="blog-grid">
                     ${blogCards}
@@ -979,38 +911,58 @@ async function generate() {
             <section class="section-panel" id="section-podcast" aria-labelledby="podcast-heading">
                 <div class="section-panel-header">
                     <div class="section-icon icon-podcast" aria-hidden="true">🎙</div>
-                    <h2 id="podcast-heading">播客</h2>
-                    <span class="section-desc">值得收听的深度对话</span>
-                    <span class="section-badge">${stats.podcastEpisodes} 期</span>
+                    <h2 id="podcast-heading"><span data-i18n="sectionPodcasts">播客</span></h2>
+                    <span class="section-desc"><span data-i18n="sectionPodcastsDesc">值得收听的深度对话</span></span>
+                    <span class="section-badge">${stats.podcastEpisodes} <span data-i18n="episodesUnit">期</span></span>
                 </div>
                 ${podcastCards}
             </section>
-        </main>
-    </div>
+    </main>
 
     <script>
-      function toggleLang() {
-        const body = document.body;
-        const isZh = body.classList.contains('lang-zh');
-        if (isZh) {
-          body.classList.replace('lang-zh', 'lang-en');
+      var I18N = ${JSON.stringify(I18N)};
+
+      function applyLanguage(lang) {
+        if (lang === 'en') {
+          document.body.classList.replace('lang-zh', 'lang-en');
           document.getElementById('lt-zh').classList.remove('active');
           document.getElementById('lt-en').classList.add('active');
         } else {
-          body.classList.replace('lang-en', 'lang-zh');
+          document.body.classList.replace('lang-en', 'lang-zh');
           document.getElementById('lt-en').classList.remove('active');
           document.getElementById('lt-zh').classList.add('active');
         }
-        try { localStorage.setItem('digest-lang', body.classList.contains('lang-zh') ? 'zh' : 'en'); } catch(e){}
+        var hideClass = lang === 'en' ? 'bi-zh' : 'bi-en';
+        var showClass = lang === 'en' ? 'bi-en' : 'bi-zh';
+        document.querySelectorAll('.' + hideClass).forEach(function(el) { el.style.display = 'none'; });
+        document.querySelectorAll('.' + showClass).forEach(function(el) { el.style.display = ''; });
+        document.querySelectorAll('[data-i18n]').forEach(function(el) {
+          var key = el.getAttribute('data-i18n');
+          if (I18N[key] && I18N[key][lang]) el.textContent = I18N[key][lang];
+        });
+        document.querySelectorAll('[data-i18n-zh]').forEach(function(el) {
+          var val = el.getAttribute(lang === 'en' ? 'data-i18n-en' : 'data-i18n-zh');
+          if (val) el.textContent = val;
+        });
+        document.querySelectorAll('[data-i18n-aria]').forEach(function(el) {
+          var key = el.getAttribute('data-i18n-aria');
+          if (I18N[key] && I18N[key][lang]) el.setAttribute('aria-label', I18N[key][lang]);
+        });
+        document.querySelectorAll('[data-i18n-title]').forEach(function(el) {
+          var key = el.getAttribute('data-i18n-title');
+          if (I18N[key] && I18N[key][lang]) el.setAttribute('title', I18N[key][lang]);
+        });
+        document.documentElement.setAttribute('lang', lang === 'en' ? 'en' : 'zh-CN');
       }
+
+      function toggleLang() {
+        var next = document.body.classList.contains('lang-zh') ? 'en' : 'zh';
+        applyLanguage(next);
+        try { localStorage.setItem('digest-lang', next); } catch(e){}
+      }
+
       (function() {
-        try {
-          if (localStorage.getItem('digest-lang') === 'en') {
-            document.body.classList.replace('lang-zh', 'lang-en');
-            document.getElementById('lt-en').classList.add('active');
-            document.getElementById('lt-zh').classList.remove('active');
-          }
-        } catch(e){}
+        try { applyLanguage(localStorage.getItem('digest-lang') || 'zh'); } catch(e){}
       })();
     </script>
     <footer class="page-footer">
