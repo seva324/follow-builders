@@ -296,7 +296,7 @@ function buildBlogCard(blog, blogSummary) {
   const summaryEn = blogSummary?.summary_en || null;
 
   const zhBlock = summaryZh
-    ? renderExpandableSection(summaryZh, 150)
+    ? `<div class="bi-zh">${renderExpandableSection(summaryZh, 150)}</div>`
     : `<p class="blog-summary bi-zh">${esc((blog.content || '').replace(/<[^>]+>/g, '').trim().slice(0, 200) + '…')}</p>`;
 
   const enBlock = summaryEn
@@ -321,12 +321,12 @@ function buildPodcastCard(podcast, podcastSummary) {
   const summaryEn = podcastSummary?.summary_en || null;
 
   const zhBlock = summaryZh
-    ? renderExpandableSection(summaryZh, 200)
-    : `<p class="pc-summary bi-zh">${esc((podcast.transcript || '').replace(/Speaker \d \| [\d:]+\n/g, '').trim().slice(0, 500) + '…')}</p>`;
+    ? `<div class="bi-zh">${renderExpandableSection(summaryZh, 200)}</div>`
+    : `<p class="pc-summary bi-zh">${esc((podcast.transcript || '').replace(/Speaker \\d \\| [\\d:]+\\n/g, '').trim().slice(0, 500) + '…')}</p>`;
 
   const enBlock = summaryEn
     ? `<div class="bi-en">${renderExpandableSection(summaryEn, 200)}</div>`
-    : (summaryZh ? '' : `<p class="pc-summary bi-en">${esc((podcast.transcript || '').replace(/Speaker \d \| [\d:]+\n/g, '').trim().slice(0, 500) + '…')}</p>`);
+    : (summaryZh ? '' : `<p class="pc-summary bi-en">${esc((podcast.transcript || '').replace(/Speaker \\d \\| [\\d:]+\\n/g, '').trim().slice(0, 500) + '…')}</p>`);
 
   return `<article class="podcast-card">
     <div class="pc-cover-wrap">
